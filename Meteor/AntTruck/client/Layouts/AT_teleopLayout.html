@@ -1,0 +1,123 @@
+<template name="AT_teleopLayout">
+	
+<h1>&nbsp;&nbsp;AntTruck: Teleoperação</h1>
+<fieldset>
+	<form onsubmit="doNothing(); return false;">
+		<br>
+		Keyboard Arrows:
+		<input type="text" id="move" onkeydown="keyDown()" onkeyup="keyUp()">
+	</form>
+		<!-- Drive buttons: -->
+<div id="parent_div">
+	<div class="child_div">
+		<div class="Arrow">
+			<button type="button" id="upButton">
+			<img src="/Images/up.png"	alt="up"
+			width="70" height="70" border="0" />
+			</button>
+		</div>
+
+		<button type="button" id="leftButton">
+		<img src="/Images/left.png"	alt="left"
+		width="70" height="70" border="0" />
+		</button>
+
+		<button type="button" id="pauseButton">
+		<img src="/Images/pause.png"	alt="pause"
+		width="70" height="70" border="0" />
+		</button>
+
+		<button type="button" id="rightButton">
+		<img src="/Images/right.png"	alt="right"
+		width="70" height="70" border="0" />
+		</button>
+
+		<br>
+
+		<div class="Arrow">
+			<button type="button" id="downButton">
+			<img src="/Images/down.png"	alt="down"
+			width="70" height="70" border="0" />
+			</button>
+		</div>
+	</div>
+</div>
+
+<div id="parent_div">
+	<div class="child_div">
+			<h2>Controle Manual</h2>   
+			<br>
+			Velocidade Linear (mm/s):
+			<input type="number" id="DRIVING_v"  value="0">
+			<br>
+			<br>
+			Velocidade Angular (&theta;/s): 
+			<input type="number" id="DRIVING_w"  value="0">
+			<br><br>
+			Tempo (s): 
+			<input type="number" id="DRIVING_time" value="0">
+			<br><br>
+			<button  type="button" id="sendCM">Enviar</button>
+			<br>
+	</div>
+</div>
+</fieldset>
+
+	<script>
+	$pressed = false;
+
+	  function keyDown(e) {
+	  	var move = document.getElementById("move");
+	  	move.style.backgroundColor = "red";
+
+	  	e = e || window.event;
+
+		    if (e.keyCode == '38') {
+        	// up arrow
+		        if (!$pressed) {
+		        	$pressed = true;
+			      console.log('up');
+			      Meteor.call('publishMessage','AntTruck/cmd','#goUp;');
+			  	}
+		    }
+		    else if (e.keyCode == '40') {
+		        // down arrow
+		        if (!$pressed) {
+		        	$pressed = true;
+			      console.log('down');
+			      Meteor.call('publishMessage','AntTruck/cmd','#goDown;');
+			  	}
+		    }
+		    else if (e.keyCode == '37') {
+		       // left arrow
+		        if (!$pressed) {
+		        	$pressed = true;
+			      console.log('left');
+			      Meteor.call('publishMessage','AntTruck/cmd','#goLeft;');
+			  	}
+		    }
+		    else if (e.keyCode == '39') {
+		       // right arrow
+		        if (!$pressed) {
+		        	$pressed = true;
+			      console.log('right');
+			      Meteor.call('publishMessage','AntTruck/cmd','#goRight;');
+			  	}
+		    }
+	  }
+	  
+	  function keyUp(){
+	  		$pressed = false;
+	    var move = document.getElementById("move");
+	    move.value = '';
+	    move.style.backgroundColor = "black";
+	    Meteor.call('publishMessage','AntTruck/cmd','#stopAll;');
+	  }
+	</script>
+
+	<script language="javascript"><!--
+		function doNothing() {
+		    //do nothing
+		}
+	</script>
+</template>

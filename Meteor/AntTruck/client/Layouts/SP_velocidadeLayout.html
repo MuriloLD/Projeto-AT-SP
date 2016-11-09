@@ -1,0 +1,53 @@
+<template name='SP_velocidadeLayout'>
+
+<h1>&nbsp;&nbsp;SuperTruck: Parâmetros de Movimento</h1>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>Velocidades</h1>
+			<p>Velocidade Linear (mm/s):&nbsp;</p>
+			<input type="text" id="nav_velLinear" value="{{#each nav_velLinear}}{{_message}}{{/each}}" readonly>
+			<p>Velocidade Angular (&theta;/s):&nbsp;</p>
+			<input type="text" id="nav_velAngular" value="{{#each nav_velAngular}}{{_message}}{{/each}}" readonly>
+			</form>
+		</div>
+	</div>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>PID Setpoints</h1>
+			<p>Setpoint Motor Direito:&nbsp;</p>
+			<input type="text" id="rPID_Setpoint" value="{{#each rPID_Setpoint}}{{_message}}{{/each}}" readonly>
+			<p>Setpoint Motor Esquerdo:&nbsp;</p>
+			<input type="text" id="lPID_Setpoint" value="{{#each lPID_Setpoint}}{{_message}}{{/each}}" readonly>
+			</form>
+		</div>
+	</div>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>PID Inputs&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+			<p>Input Motor Direito:&nbsp;</p>
+			<input type="text" id="rPID_Input" value="{{#each rPID_Input}}{{_message}}{{/each}}" readonly>
+			<p>Input Motor Esquerdo:&nbsp;</p>
+			<input type="text" id="lPID_Input" value="{{#each lPID_Input}}{{_message}}{{/each}}" readonly>
+			</form>
+		</div>
+	</div>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>PID Outputs&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+			<p>Output Motor Direito:&nbsp;</p>
+			<input type="text" id="rPID_Output" value="{{#each rPID_Output}}{{_message}}{{/each}}" readonly>
+			<p>Output Motor Esquerdo:&nbsp;</p>
+			<input type="text" id="lPID_Output" value="{{#each lPID_Output}}{{_message}}{{/each}}" readonly>
+			</form>
+		</div>
+	</div>
+
+</template>

@@ -1,0 +1,127 @@
+/* CSS declarations go here */
+  header {
+	background-color:black;
+	color:white;
+	text-align:center;
+	padding:5px;
+  }
+  nav {
+	line-height:30px;
+	background-color:#eeeeee;
+	height:720px;
+	width:120px;
+	float:left;
+	/*padding:20px 20px 200px 20px;*/
+  }
+  nav a {
+	background-color: black;
+	color: white;
+	float: center;
+	text-align: center;
+	padding: 5px 17px;
+	text-decoration: none;
+	border-radius: 4px 4px;
+  }
+  nav a:hover{
+	background-color: orange;
+  }
+  section {
+  	height: 300px;
+  	width: 1000px;
+	float:left; 
+	/*padding-top: 20px;*/
+	/*padding-right: 50px;*/
+	/*padding-bottom: 60px;*/
+	/*padding-left: 40px;*/
+  }
+  article {
+	float:left; 
+  	height: 300px;
+  	width: 1000px;
+	/*padding: 40px 40px 40px 40px;*/
+	padding-right: 50px;
+  }
+  aside {
+  	/*float: right;*/
+  }
+  footer {
+	background-color:black;
+	color:white;
+	clear:both;
+	text-align:center;
+	padding:5px;
+  }
+
+	#parent_div{
+  /*width:100px;
+  height:100px;*/
+  padding:10px;
+  /*margin-right:10px;*/
+  float:left;
+}
+.child_div{
+  border:1px solid black;
+  float:left;
+  margin-right:5px;
+  padding:20px 20px 20px 20px;
+}
+
+.home_div{
+	padding: 50px 100px 100px 300px;
+}
+
+.mqtt_div{
+	padding-top: 20px;
+	padding-left: 200px;
+}
+
+.Arrow{
+	padding: 5px 0px 5px 90px;
+}
+
+.messageArea{
+	float:left;
+	border:2px solid black;
+	padding: 30px;
+
+}
+
+.FPCbutton_go{
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 21px 50px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.FPCbutton_stop{
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 21px 50px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.vbatContainer{
+    background-color: green;
+    border: none;
+    position: static;
+      right: 400px;
+    color: white;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+}

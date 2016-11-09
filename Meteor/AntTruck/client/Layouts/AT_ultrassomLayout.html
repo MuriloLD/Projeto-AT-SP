@@ -1,0 +1,51 @@
+<template name='AT_ultrassomLayout'>
+	<h1>&nbsp;&nbsp;AntTruck: Distâncias Sensores Ultrassônicos</h1>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>Ultrassom Frontal</h1>
+			<textarea id="dist_US_Frente" rows="10" cols="37" readonly>
+{{#each dist_US_Frente}}Distância (mm): {{_message}}
+{{/each}}
+			</textarea>
+			</form>
+		</div>
+	</div>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>Ultrassom Direito</h1>
+			<textarea id="dist_US_Direito" rows="10" cols="37" readonly>
+{{#each dist_US_Direito}}Distância (mm): {{_message}}
+{{/each}}
+			</textarea>
+			</form>
+		</div>
+	</div>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>Ultrassom Esquerdo</h1>
+			<textarea id="dist_US_Esquerdo" rows="10" cols="40" readonly>
+{{#each dist_US_Esquerdo}}Distância (mm): {{_message}}
+{{/each}}
+			</textarea>
+			</form>
+		</div>
+	</div>
+
+	<div id='parent_div'>
+		<div class="child_div">
+			<form>
+			<h1>Ultrassom Servo</h1>
+			<textarea id="dist_US_servo" rows="10" cols="35" readonly>
+{{#each dist_US_servo}}Distância (mm): {{_message}}
+{{/each}}
+			</textarea>
+			</form>
+		</div>
+	</div>
+</template>

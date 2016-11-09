@@ -1,0 +1,35 @@
+	<template name="MainLayout">
+
+	<header>
+		<h1>Projeto AT & SP: <br> Web Application</h1>
+		<div class="vbatContainer" id="sp_vbat">SP: {{SP_vBat}} V</div> <div class="vbatContainer" id="at_vbat">AT: {{AT_vBat}} V</div>
+		{{> loginButtons}}
+	</header>
+
+	<nav>
+		<h1> Menu </h1>
+		SuperTruck:
+		<a href="/SP_odometria">&nbsp;&nbsp;&nbsp;Odometria&nbsp;&nbsp;</a><br>
+		<a href="/SP_velocidade">&nbsp;&nbsp;&nbsp;Velocidade&nbsp;</a><br>
+		<a href="/SP_ultrassom">&nbsp;&nbsp;&nbsp;Ultrassom&nbsp;&nbsp;</a><br>
+		<a href="/SP_teleop">Teleoperação</a><br>
+		<a href="/SP_mqtt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MQTT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+		<br>
+		AntTruck:
+		<a href="/AT_odometria">&nbsp;&nbsp;&nbsp;Odometria&nbsp;&nbsp;</a><br>
+		<a href="/AT_velocidade">&nbsp;&nbsp;&nbsp;Velocidade&nbsp;</a><br>
+		<a href="/AT_ultrassom">&nbsp;&nbsp;&nbsp;Ultrassom&nbsp;&nbsp;</a><br>
+		<a href="/AT_teleop">Teleoperação</a><br>
+		<a href="/AT_mqtt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MQTT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><br>
+
+	</nav>
+
+	<main>
+		{{> Template.dynamic template=main}}
+	</main>
+
+	<footer>
+	  Murilo Leonardelli Daltio<br>
+	  UFES - 2016
+	</footer>
+</template>

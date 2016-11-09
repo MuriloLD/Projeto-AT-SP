@@ -1,0 +1,46 @@
+<template name="AT_mqttLayout">
+	<h1>&nbsp;&nbsp;MQTT: AntTruck/talk </h1>
+	<div id="parent_div">
+		<div class="messageArea">
+		<textarea rows="18" cols="95" readonly>
+{{#each allMessages}}Topic: {{_topic}}
+Message: {{_message}}
+
+{{/each}}
+      	</textarea>
+      	<br>
+		<button type="button" id="sendData">Enviar Dados</button>
+		<button type="button" id="stopData">Parar Dados</button>
+		<button type="button" id="cleanDB">Apagar Banco de Dados</button>
+		<button type="button" id="nodeRestart">Reset ESP8266</button>
+		<button type="button" id="resetUART">Reset UART</button>
+		</div>
+	</div>
+
+	<div id="parent_div">
+		<div class="child_div">
+			<h2>Enviar Mensagem:</h2>
+			Topic: <input type="text" id="m_topic" value="{{#each savedTopic}}{{_topic}}{{/each}}">
+			<br>
+			<br>
+			Message: <input type="text" id="m_message">
+			<br>
+			<br>
+			<button type="button" id="sendMessage">Enviar</button>
+		</div>
+		<br>
+<!-- 	</div>
+
+	<div id="parent_div"> -->
+		<div class="child_div">
+			<h2>Enviar Comando Lua:</h2>
+			Topic: <input type="text" id="m_LuaTopic" value="AntTruck/cmd/Lua">
+			<br>
+			<br>
+			Message: <input type="text" id="m_LuaMessage">
+			<br>
+			<br>
+			<button type="button" id="sendLuaMessage">Enviar</button>
+		</div>
+	</div>
+</template>

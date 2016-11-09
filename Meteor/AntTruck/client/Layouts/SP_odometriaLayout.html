@@ -1,0 +1,42 @@
+<template name='SP_odometriaLayout'>
+<h1>&nbsp;&nbsp;SuperTruck: Odometria</h1>
+
+<div id="parent_div">
+	<div class="child_div">
+		<form>
+			<h2>Final Position Controller</h2>   
+			<br>
+			Coordenada X (mm):
+			<input type="number" id="FPC_x">
+			<br>
+			<br>
+			Coordenada Y (mm): 
+			<input type="number" id="FPC_y">
+			<br><br>
+			<button type="button" id="goTo" class="FPCbutton_go">Go To!</button>
+			<button type="button" id="stop" class="FPCbutton_stop">Stop!</button>
+			<br>
+	    </form>
+	</div>
+</div>
+
+<div id="parent_div">
+	<div class="child_div">
+		<form>
+			<h2>Posição Atual</h2>   
+			<br>
+			Coordenada X (mm):
+			<input type="text" id="nav_pos_x" value="{{#each nav_pos_x}}{{_message}}{{/each}}" readonly>
+			<br>
+			<br>
+			Coordenada Y (mm): 
+			<input type="text" id="nav_pos_y" value="{{#each nav_pos_y}}{{_message}}{{/each}}" readonly>
+			<br>
+			<br>
+			Orientação (&theta;): 
+			<input type="text" id="nav_heading" value="{{#each nav_heading}}{{_message}}{{/each}}" readonly>
+	    </form>
+	</div>
+</div>
+
+</template>

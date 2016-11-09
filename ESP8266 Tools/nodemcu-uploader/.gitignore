@@ -1,0 +1,13 @@
+# python-stuff 
+*.egg-info/
+.eggs
+dist/
+build/
+*.pyc
+
+# testing
+.coverage
+env/
+
+# editors
+.vscode/
