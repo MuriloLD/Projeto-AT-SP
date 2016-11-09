@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+        <meta http-equiv="refresh" content=5;>
+        <style>
+        header {
+            background-color:black;
+            color:white;
+            text-align:center;
+            padding:5px;     
+        }
+        nav {
+            line-height:30px;
+            background-color:#eeeeee;
+            height:300px;
+            width:100px;
+            float:left;
+            padding:15px;          
+        }
+        nav a {
+        background-color: black;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px 4px 0 0;
+        }
+        nav a:hover{
+            background-color: orange;
+        }
+        section {
+            width:350px;
+            float:left; 
+            padding:10px 10px 50px 10px;        
+        }
+        article {
+            padding:25px;
+        }
+        footer {
+            background-color:black;
+            color:white;
+            clear:both;
+            text-align:center;
+            padding:5px;         
+        }
+        </style>
+        </head>
+        <body>
+
+        <header>
+        <h1>Projeto SuperTruck: <br> WebService ESP8266</h1>
+        </header>
+
+        <nav>
+        <a href="/teste">Menu1</a><br>
+        <a href="/teste2">Menu2</a><br>
+        <a href="/teste3">Menu3</a><br>
+        </nav>
+
+        <section>
+        <h1>Setpoints Atuais</h1>
+        <p>Setpoint Motor Direito:  ]]..setpointDireito..[[</p>
+        <p>Setpoint Motor Esquerdo: ]]..setpointEsquerdo..[[</p>
+        </section>
+
+        <article>
+        <form>
+        Setpoint Motor Direito:<br>
+        <input type="text" name="setpointDireito">
+        <br>
+        <br>
+        Setpoint Motor Esquerdo:<br>
+        <input type="text" name="setpointEsquerdo">
+        <br><br>
+        <input type="submit">
+        </form>
+        </article>
+
+        <footer>
+        <footer>
+        Murilo Leonardelli Daltio<br>
+        UFES - 2016
+        </footer>
+
+        </body>
+        </html>
