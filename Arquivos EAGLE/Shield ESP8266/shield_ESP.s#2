@@ -9231,10 +9231,10 @@ type RDH, grid 15 mm</description>
 <part name="C2" library="rcl" deviceset="C-EU" device="025-025X050" value="0,01uF"/>
 <part name="ESP" library="pinhead" deviceset="PINHD-2X4" device=""/>
 <part name="SV1" library="con-lstb" deviceset="MA04-1" device=""/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="0207/7" value="10000"/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="0207/7" value="20000"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="0207/7" value="100"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="0207/7" value="220"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="0207/7" value="330"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="0207/7" value="330"/>
+<part name="JUMPER" library="resistor" deviceset="R-EU_" device="0207/7" value="00000"/>
 <part name="JP1" library="pinhead" deviceset="PINHD-1X2" device="/90" value="flash"/>
 </parts>
 <sheets>
@@ -9257,7 +9257,7 @@ type RDH, grid 15 mm</description>
 <instance part="R4" gate="G$1" x="78.74" y="-12.7"/>
 <instance part="R5" gate="G$1" x="86.36" y="-25.4" rot="R270"/>
 <instance part="R6" gate="G$1" x="38.1" y="-27.94" rot="R90"/>
-<instance part="R7" gate="G$1" x="43.18" y="-12.7" rot="R270"/>
+<instance part="JUMPER" gate="G$1" x="43.18" y="-12.7" rot="R270"/>
 <instance part="JP1" gate="G$1" x="-2.54" y="-43.18" rot="R270"/>
 </instances>
 <busses>
@@ -9294,7 +9294,7 @@ type RDH, grid 15 mm</description>
 <label x="106.68" y="55.88" size="1.4224" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="R7" gate="G$1" pin="1"/>
+<pinref part="JUMPER" gate="G$1" pin="1"/>
 <wire x1="43.18" y1="-7.62" x2="43.18" y2="-5.08" width="0.1524" layer="91"/>
 <label x="43.18" y="-5.08" size="1.4224" layer="95" xref="yes"/>
 </segment>
@@ -9452,7 +9452,7 @@ type RDH, grid 15 mm</description>
 </net>
 <net name="N$1" class="0">
 <segment>
-<pinref part="R7" gate="G$1" pin="2"/>
+<pinref part="JUMPER" gate="G$1" pin="2"/>
 <pinref part="ESP" gate="A" pin="4"/>
 <wire x1="25.4" y1="-17.78" x2="43.18" y2="-17.78" width="0.1524" layer="91"/>
 <pinref part="ESP" gate="A" pin="6"/>
