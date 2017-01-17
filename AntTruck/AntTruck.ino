@@ -1,9 +1,3 @@
-/*
-*       OBS: Terminar de ajustar controle de orientação 'FPC_firstCall'
-*
-*
-*/
-
 #include <Servo.h>
 #include <PID_v1.h> //Documentação: https://github.com/br3ttb/Arduino-PID-Library  & http://playground.arduino.cc/Code/PIDLibrary
 #include <Thread.h> //Documentação: https://github.com/ivanseidel/ArduinoThread

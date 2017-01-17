@@ -12,7 +12,9 @@ collectgarbage()
 srv=net.createServer(net.TCP)
 srv:listen(80,function(conn)
 	conn:on("receive", function(client,request)
-  		-- Mudar wifi e ip atual aqui!!!
+        ------------------------
+		--  Códigos HTML aqui --
+        ------------------------
 	end)
         ------------------
 	conn:on("sent",function(conn) conn:close() end)
