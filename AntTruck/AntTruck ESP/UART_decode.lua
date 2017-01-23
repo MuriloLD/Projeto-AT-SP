@@ -11,6 +11,12 @@
 ]==]
 
 
+-------------------------------------------------------------
+	--Buffer:
+	dataBuffer = '???' --GLOBAL 
+-------------------------------------------------------------
+
+
 --Debug Tables:
 function printTable(table)
 	for i,v in pairs(table) do
@@ -48,42 +54,42 @@ end
 -- Interpret incoming bytes:
 function serial_Decode(data)
 	------------------
-	local buffer={} -- saves unnamed vars received
+	local decoded={} -- saves unnamed vars received
 	local variables = {} -- saves named vars decoded
 	------------------
 	if data=='quit\n' then
 		print('Uart back to normal!')
 		uart.on("data",_,_,1)
 	else
-		--Insert every byte from string in a list:
+		--Insert every byte from string in a Table:
 		for i=1,string.len(data) do
-			buffer[i]=string.sub(data,i,i)
+			decoded[i]=string.sub(data,i,i)
 		end
 
-		if buffer[1] == '[' then
+		if decoded[1] == '[' then
 			--Save numbers of vars and its size:
-			buffer['nvars'] = string.find(data,']')-2 --> -2 positions for the '[',']'
-			for i=1,buffer.nvars do
-			buffer['n'..i] = tonumber(buffer[i+1]) --> Skip 'buffer[1]=='['
+			decoded['nvars'] = string.find(data,']')-2 --> -2 positions for the '[',']'
+			for i=1,decoded.nvars do
+			decoded['n'..i] = tonumber(decoded[i+1]) --> Skip 'decoded[1]=='['
 			end
-			--printTable(buffer) --> Debug
+			--printTable(decoded) --> Debug
 
 			--Start decoding variables according to each size:
-			local bufferCount = buffer.nvars+3 --> +3: skip '[',']' and set into the first byte position
+			local bufferCount = decoded.nvars+3 --> +3: skip '[',']' and set into the first byte position
 			local varsCount=1
 
-			while varsCount<=buffer.nvars do ----> Main loop that reconstruct the variables
+			while varsCount<=decoded.nvars do ----> Main loop that reconstruct the variables
 				local mask = 0
-				for i=1,buffer['n'..varsCount]-1 do --> -1: last position doesn't have to be shifted
-					mask = bit.bor(mask,string.byte(buffer[bufferCount]))
+				for i=1,decoded['n'..varsCount]-1 do --> -1: last position doesn't have to be shifted
+					mask = bit.bor(mask,string.byte(decoded[bufferCount]))
 					mask = bit.lshift(mask,8)
-					bufferCount = bufferCount+1 --> update buffer counter
+					bufferCount = bufferCount+1 --> update decoded counter
 				end
-				mask = bit.bor(mask,string.byte(buffer[bufferCount])) --> last byte
-				bufferCount = bufferCount+1 --> update buffer counter
+				mask = bit.bor(mask,string.byte(decoded[bufferCount])) --> last byte
+				bufferCount = bufferCount+1 --> update decoded counter
 
 				-- Var Decoded. Now save it as 'var..index':
-				buffer['var'..varsCount] = mask
+				decoded['var'..varsCount] = mask
 				varsCount=varsCount+1 --> next variable
 			end
 		else
@@ -93,53 +99,53 @@ function serial_Decode(data)
 	end
 	-----------------------------------------------------------------------------
 	--Meaning for each of the decoded variables
-	if buffer.var1~=nil then
-	variables.nav_pos_x = convertToSigned(buffer.var1, 4)
+	if decoded.var1~=nil then
+	variables.nav_pos_x = convertToSigned(decoded.var1, 4)
 	end
-	if buffer.var2~=nil then
-	variables.nav_pos_y = convertToSigned(buffer.var2, 4)
+	if decoded.var2~=nil then
+	variables.nav_pos_y = convertToSigned(decoded.var2, 4)
 	end
-	if buffer.var3~=nil then
-	variables.nav_velLinear = convertToSigned(buffer.var3, 4)
+	if decoded.var3~=nil then
+	variables.nav_velLinear = convertToSigned(decoded.var3, 4)
 	end
-	if buffer.var4~=nil then
-	variables.nav_velAngular = convertToSigned(buffer.var4, 4)
+	if decoded.var4~=nil then
+	variables.nav_velAngular = convertToSigned(decoded.var4, 4)
 	end
-	if buffer.var5~=nil then
-	variables.rPID_Setpoint = convertToSigned(buffer.var5, 4)
+	if decoded.var5~=nil then
+	variables.rPID_Setpoint = convertToSigned(decoded.var5, 4)
 	end
-	if buffer.var6~=nil then
-	variables.lPID_Setpoint = convertToSigned(buffer.var6, 4)
+	if decoded.var6~=nil then
+	variables.lPID_Setpoint = convertToSigned(decoded.var6, 4)
 	end
-	if buffer.var7~=nil then
-	variables.rPID_Input = convertToSigned(buffer.var7, 4)
+	if decoded.var7~=nil then
+	variables.rPID_Input = convertToSigned(decoded.var7, 4)
 	end
-	if buffer.var8~=nil then
-	variables.lPID_Input = convertToSigned(buffer.var8, 4)
+	if decoded.var8~=nil then
+	variables.lPID_Input = convertToSigned(decoded.var8, 4)
 	end
-	if buffer.var9~=nil then
-	variables.rPID_Output = convertToSigned(buffer.var9, 4)
+	if decoded.var9~=nil then
+	variables.rPID_Output = convertToSigned(decoded.var9, 4)
 	end
-	if buffer.var10~=nil then
-	variables.lPID_Output = convertToSigned(buffer.var10, 4)
+	if decoded.var10~=nil then
+	variables.lPID_Output = convertToSigned(decoded.var10, 4)
 	end
-	if buffer.var11~=nil then
-	variables.dist_US_Frente = string.format('%u',buffer.var11)
+	if decoded.var11~=nil then
+	variables.dist_US_Frente = string.format('%u',decoded.var11)
 	end
-	if buffer.var12~=nil then
-	variables.dist_US_Direito = string.format('%u',buffer.var12)
+	if decoded.var12~=nil then
+	variables.dist_US_Direito = string.format('%u',decoded.var12)
 	end
-	if buffer.var13~=nil then
-	variables.dist_US_Esquerdo = string.format('%u',buffer.var13)
+	if decoded.var13~=nil then
+	variables.dist_US_Esquerdo = string.format('%u',decoded.var13)
 	end
-	if buffer.var14~=nil then
-	variables.dist_US_servo = string.format('%u',buffer.var14)
+	if decoded.var14~=nil then
+	variables.dist_US_servo = string.format('%u',decoded.var14)
 	end
-	if buffer.var15~=nil then
-	variables.vBateria = convertToSigned(buffer.var15, 4)
+	if decoded.var15~=nil then
+	variables.vBateria = convertToSigned(decoded.var15, 4)
 	end
-	if buffer.var16~=nil then
-	variables.nav_heading = convertToSigned(buffer.var16, 4)
+	if decoded.var16~=nil then
+	variables.nav_heading = convertToSigned(decoded.var16, 4)
 	end
 	----------------------------------------------------------
 	local _, err = pcall( function() publishTable(variables) end)
@@ -147,21 +153,13 @@ function serial_Decode(data)
 	--printTable(variables) --> Debug
 end
 -------------------------------------------------------------
-	--Matching function:
-	dataBuffer = '???'
-
-	function matchBuffer()
-		matched = string.match(dataBuffer,'>>(..........................................................................)!!')
-		-- print(matched)
-		return matched
-	end
-
 
 -------------------------------------------------------------
 function p_serial_Decode(data)
 
 	dataBuffer = dataBuffer .. data
-	encodedData = matchBuffer()
+	encodedData = string.match(dataBuffer,
+		'>>(..........................................................................)!!')
 
 	if encodedData ~= nil then
 		print("ACHOU!: ".. encodedData) -- DEBUG
@@ -171,7 +169,7 @@ function p_serial_Decode(data)
 			mqttClient:publish('AntTruck/talk',err,0,0)
 		end
 	else
-		print('NÃO ACHOU: '..dataBuffer..'  size: '..string.len(dataBuffer)) -- DEBUG
+		print('NAO ACHOU: '..dataBuffer..'  size: '..string.len(dataBuffer)) -- DEBUG
 	end
 
 	--Clean Buffer:
