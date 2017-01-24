@@ -166,27 +166,7 @@
     //Calc v and w:
       fv = CFG_MAXSPEED*FPC_Saturator(Ro)*cos(alpha); // CFG_MAXSPEED*tanh(Ro)*cos(alpha)
       fw = FPC_Kw*alpha + fv*sin(alpha)/Ro; // fw = Kw*alpha + CFG_MAXSPEED*(tanh(Ro)/Ro)*sin(alpha)*cos(alpha)
-      
-      /*********************************************************************************************************
-        if(FPC_firstCall){ // Adjust orientation before start controller   
-          if( abs(alpha)>0.52){  /0.52 rad = 30 degrees                 
-            if( alpha > 0){
-              //goLeft
-              driveRobot(0.0,nvDegToRad(90));
-            }else{
-              //goRight
-              driveRobot(0.0,nvDegToRad(-90));
-            }  
-          }else{
-            FPC_firstCall = false;
-          }
-        }
-        else{
-          //Update new setpoints:
-          driveRobot(fv,fw);
-        }
-      // **********************************************************************************************************/
-      
+
       //Update new setpoints:
       driveRobot(fv,fw);
   }
@@ -206,7 +186,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------//
-//*********************** PID/FINAL POSITION CONTROLLER ************************
+//************************ TANGENCIAL ESCAPE CONTROLLER ************************
 //----------------------------------------------------------------------------//
   // Calc virtual target for Tangecial Escape Controler
   void calcVirtualTarget(){
