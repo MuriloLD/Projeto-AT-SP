@@ -151,24 +151,25 @@
   //------------------------------------------------------------
 
   //Final Position Controller (FPC):
-    bool FPC_firstCall = true; // Orientation adjustment
-  void FPController(double fpos_x, double fpos_y){ //need to be called in every 'RUNNING' loop
+  void FPController(double fpos_x, double fpos_y)
+  { 
+    //need to be called in every 'RUNNING' loop
     //Vars
     double fv, fw;
-    
+
     //Calc Ro and alpha:
     double delta_y = fpos_y - nav_pos_y;
     double delta_x = fpos_x - nav_pos_x;
-    Ro = sqrt( delta_y*delta_y + delta_x*delta_x );
-      //x-axe forward , y-axe to the left:
-      alpha = ( atan2(delta_y,delta_x) - nav_heading );
+    Ro = sqrt(delta_y * delta_y + delta_x * delta_x);
+    //x-axe forward , y-axe to the left:
+    alpha = (atan2(delta_y, delta_x) - nav_heading);
 
     //Calc v and w:
-      fv = CFG_MAXSPEED*FPC_Saturator(Ro)*cos(alpha); // CFG_MAXSPEED*tanh(Ro)*cos(alpha)
-      fw = FPC_Kw*alpha + fv*sin(alpha)/Ro; // fw = Kw*alpha + CFG_MAXSPEED*(tanh(Ro)/Ro)*sin(alpha)*cos(alpha)
+    fv = CFG_MAXSPEED * FPC_Saturator(Ro) * cos(alpha); // CFG_MAXSPEED*tanh(Ro)*cos(alpha)
+    fw = FPC_Kw * alpha + fv * sin(alpha) / Ro;         // fw = Kw*alpha + CFG_MAXSPEED*(tanh(Ro)/Ro)*sin(alpha)*cos(alpha)
 
-      //Update new setpoints:
-      driveRobot(fv,fw);
+    //Update PID setpoints:
+    driveRobot(fv, fw);
   }
 
   // PIDs Calculations:
@@ -309,15 +310,18 @@
 
 
   void odometria(bool debug){
-    // Ticks atuais:
+    // Current encoders counters:
     t_rticks = enc_Direita.read();
     t_lticks = enc_Esquerda.read();
-    //Intervalo de Ticks:
+
+    //Counter differencial:
     rticks = t_rticks - last_rticks;
     lticks = t_lticks - last_lticks;
-    //Atualiza Navigator:
+
+    // Update Navigator parameters:
     navigator.UpdateTicks( lticks, rticks, millis() );
-    //Atualiza last tircks:
+
+    // Update last encoders counters:
     last_rticks = t_rticks;
     last_lticks = t_lticks;
     //------------------------------------------------
@@ -325,8 +329,6 @@
     //Update PID inputs:
     rPID_Input = navigator.RightSpeed();
     lPID_Input = navigator.LeftSpeed();
-    nav_velLinear = navigator.Speed(); //Debug only
-    nav_velAngular = navigator.TurnRate(); //Debug only
     //-------------------------------------------------
 
     // Update Atual Position for the FPC: 
@@ -334,6 +336,8 @@
     nav_pos_x = nav_Pose.position.x;
     nav_pos_y = nav_Pose.position.y;
     nav_heading = nav_Pose.heading;
+    nav_velLinear = navigator.Speed(); //Debug only
+    nav_velAngular = navigator.TurnRate(); //Debug only
     //-------------------------------------------
 
     if(debug){
@@ -853,9 +857,6 @@
         //Do nothing ?
         stopAll();
 
-        //Reset FPC_firstCall
-        FPC_firstCall = true;
-
         //Reset PID Parameters:
         rPID_Setpoint = 0;
         rPID_Output = 0;
@@ -1184,40 +1185,34 @@ void setup() {
   servoUS.attach(pin_Servo);
   //-----------------------------
 
-  // Setup das Threads:
-  //Thread Controllers:
-  TC_BATERIA.add(&T_set_PID_Intervals);
-  TC_BATERIA.add(&T_alertaBateria);
-  //-------------------------------------
-  TC_US.add(&T_USinterrupt_Read);
-  TC_US.add(&T_USi_Servo_Read);
-  //-------------------------------------
-  TC_ESP_SERIAL.add(&T_ESP_SERIAL);
-  //-------------------------------------
+  // Threads' setups:
+    //Thread Controllers:
+    TC_BATERIA.add(&T_set_PID_Intervals);
+    TC_BATERIA.add(&T_alertaBateria);
+    //-------------------------------------
+    TC_US.add(&T_USinterrupt_Read);
+    TC_US.add(&T_USi_Servo_Read);
+    //-------------------------------------
+    TC_ESP_SERIAL.add(&T_ESP_SERIAL);
+    //-------------------------------------
 
-  //Tempos e funções chamadas:
-  T_set_PID_Intervals.setInterval(5000);
-  T_set_PID_Intervals.onRun(set_PID_Intervals);
+    //Setting time and function to call:
+    T_set_PID_Intervals.setInterval(5000); // in milisseconds
+    T_set_PID_Intervals.onRun(set_PID_Intervals);
 
-  T_alertaBateria.setInterval(10000);
-  T_alertaBateria.onRun(alertaBateria);
-  //--------------------------------------------
-  T_USinterrupt_Read.setInterval(10);
-  T_USinterrupt_Read.onRun(us_Read);
+    T_alertaBateria.setInterval(10000); // in milisseconds
+    T_alertaBateria.onRun(alertaBateria);
+    //--------------------------------------------
+    T_USinterrupt_Read.setInterval(10); // in milisseconds
+    T_USinterrupt_Read.onRun(us_Read);
 
-  T_USi_Servo_Read.setInterval(50);
-  T_USi_Servo_Read.onRun(us_servoRead);
-  //--------------------------------------------
-  T_ESP_SERIAL.setInterval(500);
-  T_ESP_SERIAL.onRun(sendToESP);
-    T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's call.
-    /****************************************************/
-
-  //Inicia a Odometria e Navegação:
-  // set up navigation
-  navigator.InitEncoder( WHEEL_DIAMETER, WHEEL_BASE, TICKS_PER_REV );
-  navigator.Reset( millis() );
-  //-------------------------------------------------------------------
+    T_USi_Servo_Read.setInterval(50); // in milisseconds
+    T_USi_Servo_Read.onRun(us_servoRead);
+    //--------------------------------------------
+    T_ESP_SERIAL.setInterval(500); // in milisseconds
+    T_ESP_SERIAL.onRun(sendToESP);
+    T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's "sendData" call.
+  /****************************************************/
 
   //Inicialize PID:
   PID_right.SetMode(AUTOMATIC);
@@ -1237,15 +1232,15 @@ void setup() {
 }
 
 void loop() {
-  TC_BATERIA.run();
-  TC_US.run();
-  TC_ESP_SERIAL.run();
-  computePID();
-  odometria(0); //arg -> 1 => debug intervalos de ticks
+  TC_BATERIA.run(); // Controls battery monitoring functions
+  TC_US.run(); // Controls ultrasound sensors readings
+  TC_ESP_SERIAL.run(); // Sends variables buffer to the ESP8266 every 500ms
+  computePID(); // Calculates PID's parameters
+  odometria(0); // Calculates position, velocity, orientation, etc
 //-------------------//
-  stateController(); 
+  stateController();    // States machine
 //-------------------//
-  ESP8266_feedback();
+  ESP8266_feedback();   // Receives commands coming from the ESP8266 
 //-------------------//
 
 //Debugs:
