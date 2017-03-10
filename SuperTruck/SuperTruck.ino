@@ -1214,6 +1214,12 @@ void setup() {
     T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's "sendData" call.
   /****************************************************/
 
+  //Inicia a Odometria e Navegação:
+  // set up navigation
+  navigator.InitEncoder( WHEEL_DIAMETER, WHEEL_BASE, TICKS_PER_REV );
+  navigator.Reset( millis() );
+  //-------------------------------------------------------------------
+
   //Inicialize PID:
   PID_right.SetMode(AUTOMATIC);
   PID_right.SetSampleTime(100);
@@ -1244,7 +1250,7 @@ void loop() {
 //-------------------//
 
 //Debugs:
-  // debug_Odometria();
+  debug_Odometria();
   // debug_PID();
   // debug_Encoder();
   // debug_Ultrassom();

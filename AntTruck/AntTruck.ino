@@ -81,10 +81,10 @@
 //----------------------------------------------------------------------------//
   //PINs motores: 
   // May be inverted in case of wrong direction 
-  #define motorDireita_IN1  5
-  #define motorDireita_IN2  6
-  #define motorEsquerda_IN3 10
-  #define motorEsquerda_IN4 9
+  #define motorDireita_IN1  6
+  #define motorDireita_IN2  5
+  #define motorEsquerda_IN3 9
+  #define motorEsquerda_IN4 10
   //---------------------------------
 
   //PINs ultrassom:
