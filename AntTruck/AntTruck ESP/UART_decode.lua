@@ -3,7 +3,7 @@
 ------	   Double/Float numbers not supported yet   -------------
 -----------------------------------------------------------------
 
---[==[ ATENTION
+--[==[ ATTENTION
 	Changing numbers of variables decoded:
 		1. Add meaning (name) of each one
 		2. Add Matching pattern
@@ -27,9 +27,18 @@ end
 ------------------------------------------------------------------
 --MQTT Publish Table:
 function publishTable(table)
-	for key,value in pairs(table) do
-		mqttClient:publish('AntTruck/Vars/'..key,value,0,0)
-	end
+	--
+	-- for key,value in pairs(table) do
+	-- 	mqttClient:publish('AntTruck/Vars/'..key,value,0,0)
+	-- end
+	--
+	-- Pose and Speed:
+	mqttClient:publish('AntTruck/Pose',
+						 table.nav_pos_x ..'/'..
+						 table.nav_pos_y ..'/'..
+						 table.nav_heading..'/'..
+						 table.nav_velLinear ..'/'..
+						 table.nav_velAngular ,0,0)
 	collectgarbage()
 	collectgarbage()
 end
@@ -148,9 +157,13 @@ function serial_Decode(data)
 	variables.nav_heading = convertToSigned(decoded.var16, 4)
 	end
 	----------------------------------------------------------
+
+	-- Publish variables
 	local _, err = pcall( function() publishTable(variables) end)
 	if err then print('Error: '..err) end
 	--printTable(variables) --> Debug
+	----------------------------------------------------------
+
 end
 -------------------------------------------------------------
 
@@ -162,19 +175,19 @@ function p_serial_Decode(data)
 		'>>(..........................................................................)!!')
 
 	if encodedData ~= nil then
-		print("ACHOU!: ".. encodedData) -- DEBUG
+		print("ACHOU!: ".. string.len(encodedData)) -- DEBUG
 		-------
 		local _, err = pcall(serial_Decode,encodedData)
 		if err then
 			mqttClient:publish('AntTruck/talk',err,0,0)
 		end
 	else
-		print('NAO ACHOU: '..dataBuffer..'  size: '..string.len(dataBuffer)) -- DEBUG
+		print('NAO ACHOU: '..string.len(dataBuffer)) -- DEBUG
 	end
 
 	--Clean Buffer:
-	if string.len(dataBuffer) > 64*3 then
-		dataBuffer = '???'
+	if string.len(dataBuffer) > 78*4 then
+		dataBuffer = ''
 	end
 
 	collectgarbage()

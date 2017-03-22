@@ -21,9 +21,17 @@ end
 ------------------------------------------------------------------
 --MQTT Publish Table:
 function publishTable(table)
-	for key,value in pairs(table) do
-		mqttClient:publish('SuperTruck/Vars/'..key,value,0,0)
-	end
+	--
+	-- for key,value in pairs(table) do
+	-- 	mqttClient:publish('SuperTruck/Vars/'..key,value,0,0)
+	-- end
+	--
+	mqttClient:publish('SuperTruck/Pose',
+						table.nav_pos_x ..'/'..
+						table.nav_pos_y ..'/'..
+						table.nav_heading..'/'..
+						table.nav_velLinear ..'/'..
+						table.nav_velAngular ,0,0)
 	collectgarbage()
 	collectgarbage()
 end
@@ -175,8 +183,8 @@ function p_serial_Decode(data)
 	end
 
 	--Clean Buffer:
-	if string.len(dataBuffer) > 64*3 then
-		dataBuffer = '???'
+	if string.len(dataBuffer) > 78*4 then
+		dataBuffer = ''
 	end
 
 	collectgarbage()

@@ -1,6 +1,6 @@
 
 -- init mqtt client with keepalive timer 600sec
-mqttClient = mqtt.Client('ESP8266_AntTruck', 600, "ispace", "ispace")--chip id: 16430855
+mqttClient = mqtt.Client('ESP8266_AntTruck', 600, "guest", "guest")--chip id: 16430855
 
 mqttClient:on("offline", function(client) print ("offline") end)
 
@@ -22,7 +22,7 @@ mqttClient:on("message", function(client, topic, data)
   end
 end)
 
-mqttClient:connect(bip, 1883,0,1,
+mqttClient:connect(bip, bport, 0, 1,
   function(client) print('MQTT Connected!')
     --Subscribe to All topics:
     if client:subscribe("AntTruck/cmd/#",0,function(client)
@@ -34,6 +34,9 @@ mqttClient:connect(bip, 1883,0,1,
       client:publish('AntTruck/talk',"IP Info: \nIP Address: "..ip..
 	  "\nNetmask: "..nm.."\nGateway Addr: "..gw.."\nMAC Address: "..
 	  wifi.sta.getmac()..'\n',0,0)
+      -- Change uart after MQTT connected
+      dofile('UART_decode.lua')
+      print('UART Decode set!')
     end 
    end,
   function(client,reason) print('MQTT Deu ruim: '..reason)
