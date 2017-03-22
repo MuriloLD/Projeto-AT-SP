@@ -22,7 +22,7 @@ mqttClient:on("message", function(client, topic, data)
   end
 end)
 
-mqttClient:connect(bip, bport, 0, 1,
+mqttClient:connect(bip, bport, 0, 0,
   function(client) print('MQTT Connected!')
     --Subscribe to All topics:
     if client:subscribe("AntTruck/cmd/#",0,function(client)

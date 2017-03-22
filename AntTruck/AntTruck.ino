@@ -35,7 +35,7 @@
 
 
   //Debugs:
-  #define DEBUG_SETPIDINTERVAL  0     // PWM max
+  #define DEBUG_SETPIDINTERVAL  1     // PWM max
   #define DEBUG_ESP_FEEDBACK    0     // Usage of "Serial.print" 
 
   //Testes:
@@ -109,7 +109,7 @@
   // PID Variables:
   double  rPID_Setpoint,rPID_Input,rPID_Output,
   lPID_Setpoint,lPID_Input,lPID_Output;
-  double  Kp= 0.9, Ki = 0.16, Kd=0.0;
+  double  Kp= 0.55, Ki = 0.35, Kd=0.0;
   // double  Kp= 0.55, Ki = 0.006, Kd=0.0; // Constants for FPC
   //---------------------------------------------//
   double pid_max_PWM = 150; 
@@ -722,6 +722,37 @@
       Serial.print(" n_pose.heading (rad): ");
       Serial.println(n_pose.heading);
       //--------------------------------------------------
+    }else if (cmd.startsWith("setPID")){ // Set start pose
+
+      //Parenthesis Indexes 
+    	int p1 = cmd.indexOf('('); //Parenthesis position
+    	int comma = cmd.indexOf(','); //Separate linear and angular velocities 
+      int colon = cmd.indexOf('/'); //Separate time
+    	int p2 = cmd.indexOf(')'); //Second Parenthesis position
+      //Take the arguments from the cmd string:
+      String _kp, _ki, _kd;
+
+      _kp = cmd.substring(p1+1,comma);
+      _ki = cmd.substring(comma+1,colon);
+      _kd = cmd.substring(colon+1,p2);
+
+      PID_right.SetTunings( _kp.toFloat() ,_ki.toFloat(), _kd.toFloat() );
+      PID_left.SetTunings( _kp.toFloat() ,_ki.toFloat(), _kd.toFloat() );
+
+      //debug:
+      Serial.print("PID_right.GetKp(): ");
+      Serial.print(PID_right.GetKp());     
+      Serial.print("\tPID_right.GetKi(): ");
+      Serial.print(PID_right.GetKi());     
+      Serial.print("\tPID_right.GetKd(): ");
+      Serial.print(PID_right.GetKd());     
+      Serial.print("\t||\tPID_left.GetKp(): ");
+      Serial.print(PID_left.GetKp());     
+      Serial.print("PID_left.GetKi(): ");
+      Serial.print(PID_left.GetKi());     
+      Serial.print("PID_left.GetKd(): ");
+      Serial.println(PID_left.GetKd());     
+      //--------------------------------------------------
     }else if (cmd == "resetPose"){ // Set start pose
         navigator.Reset( millis() );
         Serial.println("Navigator reseted.");
@@ -1298,7 +1329,7 @@ void loop() {
 
 //Debugs:
   // debug_Odometria();
-  // debug_PID();
+  debug_PID();
   // debug_Encoder();
   // debug_Ultrassom();
 //------------------------
