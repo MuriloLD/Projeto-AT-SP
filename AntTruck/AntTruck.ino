@@ -20,7 +20,7 @@
   #define CFG_FORCEFIELD_RADIUS   250 // Minimum US distance [mm]
 
   // Battery Monitoring
-  #define CFG_RESISTOR_R1       18790 
+  #define CFG_RESISTOR_R1       18790
   #define CFG_RESISTOR_R2       12830
 
   // Navigator defines
@@ -30,7 +30,7 @@
 
   //Final Position Controller Defines
   #define FPC_CONVERGENCERADIUS 30.0  // Outside circle radius in mm for FPController
-  #define FPC_MAXRo   400.0 // Distance in mm when the FPC starts to decrease speed
+  #define FPC_MAXRo   50.0 // Distance in mm when the FPC starts to decrease speed
   #define FPC_Kw      0.3 // Angular Velocity Equation Constant 
 
 
@@ -109,10 +109,10 @@
   // PID Variables:
   double  rPID_Setpoint,rPID_Input,rPID_Output,
   lPID_Setpoint,lPID_Input,lPID_Output;
-  double  Kp= 0.55, Ki = 0.006, Kd=0.0;
-  // double  Kp= 0.2, Ki = 0.005, Kd=0.0; // Constants for FPC
+  double  Kp= 0.9, Ki = 0.16, Kd=0.0;
+  // double  Kp= 0.55, Ki = 0.006, Kd=0.0; // Constants for FPC
   //---------------------------------------------//
-  double pid_max_PWM = 100; 
+  double pid_max_PWM = 150; 
   //---------------------------------------------//
 
   //Objetos PIDs:
@@ -127,6 +127,7 @@
 
     PID_right.SetOutputLimits(-pid_max_PWM, pid_max_PWM);
     PID_left.SetOutputLimits(-pid_max_PWM, pid_max_PWM);
+    
     //Debug:
     #if DEBUG_SETPIDINTERVAL
     Serial.println("*****Debug set_PID_Intervals():");
@@ -686,6 +687,44 @@
       Serial.print("\tRUNNING_y: ");
       Serial.println(RUNNING_y);
       //--------------------------------------------------
+    }else if (cmd.startsWith("setPose")){ // Set start pose
+      
+      nvPose n_pose;
+
+      //Parenthesis Indexes 
+    	int p1 = cmd.indexOf('('); //Parenthesis position
+    	int comma = cmd.indexOf(','); //Separate linear and angular velocities 
+      int colon = cmd.indexOf('/'); //Separate time
+    	int p2 = cmd.indexOf(')'); //Second Parenthesis position
+      //Take the arguments from the cmd string:
+      String _x, _y, _angle;
+
+      _x = cmd.substring(p1+1,comma);
+      _y = cmd.substring(comma+1,colon);
+      _angle = cmd.substring(colon+1,p2);
+
+      // Stores x,y position:
+      n_pose.position.x = (double) _x.toInt();
+      n_pose.position.y = (double) _y.toInt();
+      n_pose.heading = (float) _angle.toInt();
+      
+      //Change Pos:
+      navigator.SetStartPose( n_pose );
+      navigator.Reset( millis() );
+
+      //debug:
+      Serial.print("n_pose.position.x: ");
+      Serial.print(n_pose.position.x);
+      Serial.print(" n_pose.position.y: ");
+      Serial.print(n_pose.position.y);
+      Serial.print(" _angle(graus): ");
+      Serial.print(_angle);
+      Serial.print(" n_pose.heading (rad): ");
+      Serial.println(n_pose.heading);
+      //--------------------------------------------------
+    }else if (cmd == "resetPose"){ // Set start pose
+        navigator.Reset( millis() );
+        Serial.println("Navigator reseted.");
     }else if(cmd == "obstacleDetected"){ //US_OBSTACLE STATE
       state = US_OBSTACLE;      
     }else if(cmd == "goUp"){
@@ -729,24 +768,25 @@
       case INIT:
       { 
         #if TST_MOTORS
-        analogWrite(motorDireita_IN1, LOW);
-        analogWrite(motorDireita_IN2, pid_max_PWM);
-        analogWrite(motorEsquerda_IN3, pid_max_PWM);
-        analogWrite(motorEsquerda_IN4, LOW);
+          analogWrite(motorDireita_IN1, LOW);
+          analogWrite(motorDireita_IN2, pid_max_PWM);
+          analogWrite(motorEsquerda_IN3, pid_max_PWM);
+          analogWrite(motorEsquerda_IN4, LOW);
 
         #elif TST_COLLECTDATA  //Only compile if needed
-        Serial.println("ENTERING COLLECT DATA!");
-        delay(1000);
-        last = time = millis();
+          Serial.println("ENTERING COLLECT DATA!");
+          delay(1000);
+          last = time = millis();
 
-        analogWrite(motorDireita_IN1, LOW);
-        analogWrite(motorDireita_IN2, pid_max_PWM);
-        analogWrite(motorEsquerda_IN3, pid_max_PWM);
-        analogWrite(motorEsquerda_IN4, LOW);
+          analogWrite(motorDireita_IN1, LOW);
+          analogWrite(motorDireita_IN2, pid_max_PWM);
+          analogWrite(motorEsquerda_IN3, pid_max_PWM);
+          analogWrite(motorEsquerda_IN4, LOW);
 
-        state = COLLECTING_DATA;
+          state = COLLECTING_DATA;
+        #else
+          state = WAITING;
         #endif
-        state = WAITING;
         break;
       }
 
@@ -790,7 +830,7 @@
 
       case RUNNING :
       {
-
+          /*  //ATENÇÃO: DESVIO DE OBSTACULOS DESATIVADO
           if( (dist_US_Direito<CFG_FORCEFIELD_RADIUS) ||
               (dist_US_Esquerdo<CFG_FORCEFIELD_RADIUS) ||
               (dist_US_Frente<CFG_FORCEFIELD_RADIUS)       ){ //In case of obstacle inside the virtual force field:
@@ -798,16 +838,18 @@
             calcVirtualTarget();
             state = US_OBSTACLE; 
           }
+          // 
           // else if(dist_US_servo<CFG_FORCEFIELD_RADIUS){ // Obstacle found behind the robot
-          //     stopAll(); //################################################################################################################################################################################################################################################################
+          //     stopAll();  //ATENÇÃO
           // } 
           else {
+          // */
 
             FPController(RUNNING_x,RUNNING_y);
             if ( Ro < nvMM(FPC_CONVERGENCERADIUS) ){
               state = WAITING;  
             }
-          }
+          // } //ATENÇÃO: DESVIO DE OBSTACULOS DESATIVADO
             motorHandler(); //Update new PWM values
 
         break;
@@ -1115,18 +1157,25 @@
 
   //Debug PID:
   void debug_PID(){
-    Serial.print("RI: ");
-    Serial.print(rPID_Input);
-    Serial.print("\tRO: ");
-    Serial.print(rPID_Output);
-    Serial.print("\tRS: ");
-    Serial.print(rPID_Setpoint);
-    Serial.print("\t|| LI: ");
-    Serial.print(lPID_Input);
-    Serial.print("\tLO: ");
-    Serial.print(lPID_Output);
-    Serial.print("\tLS: ");
-    Serial.println(lPID_Setpoint);
+    double last_pid_r = 0, last_pid_l = 0;
+
+    if ( (rPID_Output != last_pid_r) || (lPID_Output != last_pid_l) ){
+      Serial.print("RI: ");
+      Serial.print(rPID_Input);
+      Serial.print("\tRO: ");
+      Serial.print(rPID_Output);
+      Serial.print("\tRS: ");
+      Serial.print(rPID_Setpoint);
+      Serial.print("\t|| LI: ");
+      Serial.print(lPID_Input);
+      Serial.print("\tLO: ");
+      Serial.print(lPID_Output);
+      Serial.print("\tLS: ");
+      Serial.println(lPID_Setpoint);
+      //--
+      last_pid_r = rPID_Output;
+      last_pid_l = lPID_Output;
+    }
   }
   //------------------------------------------------
 
@@ -1207,7 +1256,7 @@ void setup() {
     T_USi_Servo_Read.setInterval(50); // in milisseconds
     T_USi_Servo_Read.onRun(us_servoRead);
     //--------------------------------------------
-    T_ESP_SERIAL.setInterval(500); // in milisseconds
+    T_ESP_SERIAL.setInterval(200); // in milisseconds
     T_ESP_SERIAL.onRun(sendToESP);
     T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's "sendData" call.
   /****************************************************/
@@ -1237,7 +1286,7 @@ void setup() {
 
 void loop() {
   TC_BATERIA.run(); // Controls battery monitoring functions
-  TC_US.run(); // Controls ultrasound sensors readings
+  // TC_US.run(); // Controls ultrasound sensors readings
   TC_ESP_SERIAL.run(); // Sends variables buffer to the ESP8266 every 500ms
   computePID(); // Calculates PID's parameters
   odometria(0); // Calculates position, velocity, orientation, etc
@@ -1252,6 +1301,5 @@ void loop() {
   // debug_PID();
   // debug_Encoder();
   // debug_Ultrassom();
-//------------------------    
-
+//------------------------
 }
