@@ -53,7 +53,7 @@ function setup_server(aps)
       file.writeline('ssid = "' .. _GET.ap .. '"')
       file.writeline('password = "' .. _GET.psw .. '"')
       file.writeline('bip = "' .. _GET.bip .. '"')
-      file.writeline('bport = "' .. _GET.bport .. '"')      
+      file.writeline('bport = "' .. _GET.bport .. '"')  
       file.close()
       node.compile("config.lua")
       client:send(buf)
@@ -68,7 +68,7 @@ function setup_server(aps)
     buf = buf .. "Enter wifi SSID: <input type='text' name='ap'></input><br>"
     buf = buf .. "Enter wifi password: <input type='password' name='psw'></input><br>"
     buf = buf .. "Enter MQTT Broker IP: <input type='text' name='bip'></input><br>"
-    buf = buf .. "Enter MQTT Broker PORT: <input type='text' name='bport'></input>"    
+    buf = buf .. "Enter MQTT Broker PORT: <input type='text' name='bport'></input><br>"
     buf = buf .. "<br><button type='submit'>Save</button>"               
     buf = buf .. "</form></body></html>"
     client:send(buf)

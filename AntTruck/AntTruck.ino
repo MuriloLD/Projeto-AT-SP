@@ -35,7 +35,7 @@
 
 
   //Debugs:
-  #define DEBUG_SETPIDINTERVAL  1     // PWM max
+  #define DEBUG_SETPIDINTERVAL  0     // PWM max
   #define DEBUG_ESP_FEEDBACK    0     // Usage of "Serial.print" 
 
   //Testes:
@@ -1109,10 +1109,9 @@
         for (int i = 0; i < se.getCount(); ++i){
           Serial3.write( se.getBufferIndex(i) );     //
           // str = str + se.getBufferIndex(i);      // Qual é melhor?
-        Serial3.flush();
         }
+      // Serial3.print(str);
       Serial3.flush();
-      // Serial.print(str);
         //-------DEBUG
           // Serial.print('\n');
           // Serial.print("--->STR: ");
@@ -1329,7 +1328,7 @@ void loop() {
 
 //Debugs:
   // debug_Odometria();
-  debug_PID();
+  // debug_PID();
   // debug_Encoder();
   // debug_Ultrassom();
 //------------------------

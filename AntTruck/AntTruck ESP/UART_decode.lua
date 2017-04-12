@@ -11,12 +11,6 @@
 ]==]
 
 
--------------------------------------------------------------
-	--Buffer:
-	dataBuffer = '???' --GLOBAL 
--------------------------------------------------------------
-
-
 --Debug Tables:
 function printTable(table)
 	for i,v in pairs(table) do
@@ -27,18 +21,18 @@ end
 ------------------------------------------------------------------
 --MQTT Publish Table:
 function publishTable(table)
-	--
-	-- for key,value in pairs(table) do
-	-- 	mqttClient:publish('AntTruck/Vars/'..key,value,0,0)
-	-- end
-	--
-	-- Pose and Speed:
-	mqttClient:publish('AntTruck/Pose',
-						 table.nav_pos_x ..'/'..
-						 table.nav_pos_y ..'/'..
-						 table.nav_heading..'/'..
-						 table.nav_velLinear ..'/'..
-						 table.nav_velAngular ,0,0)
+	
+	for key,value in pairs(table) do
+		mqttClient:publish('AntTruck/Vars/'..key,value,0,0)
+	end
+	
+	-- Using just odometry:
+	-- mqttClient:publish('AntTruck/Pose',
+	-- 					 table.nav_pos_x ..'/'..
+	-- 					 table.nav_pos_y ..'/'..
+	-- 					 table.nav_heading..'/'..
+	-- 					 table.nav_velLinear ..'/'..
+	-- 					 table.nav_velAngular ,0,0)
 	collectgarbage()
 	collectgarbage()
 end
@@ -166,34 +160,39 @@ function serial_Decode(data)
 
 end
 -------------------------------------------------------------
+-- Recognize pattern
+	function matchBuffer(str)
+		matched = string.match(str,'>>(..........................................................................)!!')
+		return matched
+	end
 
 -------------------------------------------------------------
+
+local dataBuffer = ''
+
 function p_serial_Decode(data)
 
-	dataBuffer = dataBuffer .. data
-	encodedData = string.match(dataBuffer,
-		'>>(..........................................................................)!!')
+	dataBuffer = dataBuffer..data
 
-	if encodedData ~= nil then
-		print("ACHOU!: ".. string.len(encodedData)) -- DEBUG
-		-------
-		local _, err = pcall(serial_Decode,encodedData)
-		if err then
-			mqttClient:publish('AntTruck/talk',err,0,0)
+		local encodedData = matchBuffer(dataBuffer)
+
+		if encodedData ~= nil then
+			-- print("ACHOU!: ".. string.len(encodedData)) -- DEBUG
+			-------
+			local _, err = pcall(serial_Decode,encodedData)
+			if err then
+				mqttClient:publish('AntTruck/talk',err,0,0)
+			end
+			--Clean buffer:
+			dataBuffer = ''
+		else
+			-- print('NÃO ACHOU: ' .. string.len(dataBuffer)) -- DEBUG
 		end
-	else
-		print('NAO ACHOU: '..string.len(dataBuffer)) -- DEBUG
-	end
-
-	--Clean Buffer:
-	if string.len(dataBuffer) > 78*4 then
-		dataBuffer = ''
-	end
 
 	collectgarbage()
 	collectgarbage()
 end
 
 -- Serial handler function
-uart.on("data", 78, p_serial_Decode, 0)
+uart.on("data", 0, p_serial_Decode, 0)
 -------------------------------------------------------------

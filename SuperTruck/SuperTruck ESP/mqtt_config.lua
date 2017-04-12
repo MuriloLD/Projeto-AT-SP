@@ -1,6 +1,6 @@
 
--- init mqtt client with keepalive timer 600sec
-mqttClient = mqtt.Client('ESP8266_SuperTruck', 600, "guest", "guest")--chip id: 16430855
+-- init mqtt client with keepalive timer 3600sec
+mqttClient = mqtt.Client('ESP8266_SuperTruck', 3600, "guest", "guest", 1)--chip id: 16430855
 
 mqttClient:on("offline", function(client) print ("offline") end)
 
@@ -22,7 +22,7 @@ mqttClient:on("message", function(client, topic, data)
   end
 end)
 
-mqttClient:connect(bip, bport,0,1,
+mqttClient:connect(bip, bport, 0, 1,
   function(client) print('MQTT Connected!')
     --Subscribe to All topics:
     if client:subscribe("SuperTruck/cmd/#",0,function(client)
