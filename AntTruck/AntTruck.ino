@@ -14,6 +14,9 @@
 //----------------------------------------------------------------------------//
 //**************************** CONFIGURATIONS ********************************//
 //----------------------------------------------------------------------------//
+  // INTELLIGENT SPACE ATSP
+  #define CFG_IS_ATSP             0
+
   #define CFG_MINBATERRY          9.5 // Minimum Battery Voltage
   #define CFG_MAXSPEED            250.0 // [mm/s]
   #define CFG_MAXTURNRATE         150.0 // [theta/s]
@@ -1047,6 +1050,24 @@
 
       se.clean();
       
+    #elif CFG_IS_ATSP
+      /*  
+      *   INTELLIGENT SPACE CONFIGURATION
+      */
+
+      // Cast variables to int:
+          int32_t i_nav_pos_x = (int32_t) nav_pos_x; //casting
+          int32_t i_nav_pos_y = (int32_t) nav_pos_y; //casting
+          int32_t i_nav_heading = (int32_t) nvRadToDeg(nav_heading);
+          int32_t i_nav_velLinear = (int32_t) nav_velLinear; //casting
+          int32_t i_nav_velAngular = (int32_t) nav_velAngular; //casting
+      
+      // Create msg:
+        String msg = String(i_nav_pos_x) + ',' + String(i_nav_pos_y) + ',' + String(i_nav_heading) + ',' + String(i_nav_velLinear) + ',' + String(i_nav_velAngular);
+
+      // Send to ESP:
+        Serial3.println(msg);
+      
     #else
 
       //Add begin marker (2):
@@ -1286,7 +1307,11 @@ void setup() {
     T_USi_Servo_Read.setInterval(50); // in milisseconds
     T_USi_Servo_Read.onRun(us_servoRead);
     //--------------------------------------------
-    T_ESP_SERIAL.setInterval(200); // in milisseconds
+    #if CFG_IS_ATSP
+      T_ESP_SERIAL.setInterval(200); // in milisseconds
+    #else
+      T_ESP_SERIAL.setInterval(500); // in milisseconds
+    #endif
     T_ESP_SERIAL.onRun(sendToESP);
     T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's "sendData" call.
   /****************************************************/

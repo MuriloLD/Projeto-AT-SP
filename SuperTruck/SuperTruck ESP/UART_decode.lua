@@ -166,6 +166,7 @@ end
 
 local dataBuffer = ''
 
+-- DEFAULT decoder callback:
 function p_serial_Decode(data)
 
 	dataBuffer = dataBuffer..data
@@ -189,6 +190,35 @@ function p_serial_Decode(data)
 	collectgarbage()
 end
 
+-- IS decoder callback:
+function p_is_serial_Decode(data)
+
+	local nav_pos_x, nav_pos_y, nav_heading, nav_velLinear, nav_velAngular = string.match(data, '(.+),(.+),(.+),(.+),(.+)')
+
+		local _, err = pcall( function()
+								mqttClient:publish('SuperTruck/Pose',
+												nav_pos_x ..'/'..
+												nav_pos_y ..'/'..
+												nav_heading..'/'..
+												nav_velLinear ..'/'..
+												nav_velAngular ,0,0)
+								end
+		)
+		if err then
+			mqttClient:publish('SuperTruck/talk',err,0,0)
+			print(err)
+		end
+
+	collectgarbage()
+	collectgarbage()							
+end
+
+
 -- Serial handler function
-uart.on("data", 0, p_serial_Decode, 0)
+if (intent == 'DEFAULT') then
+	uart.on("data", 0, p_serial_Decode, 0)
+elseif (intent == 'IS') then
+	uart.on("data", '\n', p_is_serial_Decode, 0)
+end
+
 -------------------------------------------------------------

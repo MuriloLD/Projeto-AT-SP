@@ -4,14 +4,12 @@
 
 #include "ATSP.h"
 
-ATSP::ATSP(const int resistor_r1, const int resistor_r2) {
+ATSP::ATSP(const int resistor_r1, const int resistor_r2)
+    : encoder_right(20, 21), encoder_left(19, 18),
+      PID_right(&rPID_Input, &rPID_Output, &rPID_Setpoint, Kp, Ki, Kd, DIRECT),
+      PID_left(&lPID_Input, &lPID_Output, &lPID_Setpoint, Kp, Ki, Kd, DIRECT) {
   this->_CFG_RESISTOR_R1 = resistor_r1;
   this->_CFG_RESISTOR_R2 = resistor_r2;
-}
-
-void ATSP::run() {
-  state_controller(); // States machine
-  odometry();         // Calculates position, velocity, orientation, etc
 }
 
 void ATSP::set_motor_pins(const int right_motor_IN1, const int right_motor_IN2,
@@ -32,17 +30,9 @@ void ATSP::setup(HardwareSerial &esp_serial, uint16_t baud) {
   pinMode(_leftmotor_IN4, OUTPUT);
   //--------------------------------------
 
-  // Thread Controllers:
-  _tc_atsp.add(&_t_esp_serial);
-
-  // Setting time and function to call:
-  _t_esp_serial.setInterval(200); // in milisseconds
-  _t_esp_serial.onRun(sendto_esp8266);
-  _t_esp_serial.enabled = 0;
-
   // Inicia a Odometria e Navegação:
   // set up navigation
-  navigator.InitEncoder(WHEEL_DIAMETER, WHEEL_BASE, TICKS_PER_REV);
+  navigator.InitEncoder(_WHEEL_DIAMETER, _WHEEL_BASE, _TICKS_PER_REV);
   navigator.Reset(millis());
   //-------------------------------------------------------------------
 
@@ -66,7 +56,7 @@ void ATSP::odometry() {
   lticks = t_lticks - last_lticks;
 
   // Update Navigator parameters:
-  _navigator.UpdateTicks(lticks, rticks, millis());
+  navigator.UpdateTicks(lticks, rticks, millis());
 
   // Update last encoders counters:
   last_rticks = t_rticks;
@@ -74,30 +64,14 @@ void ATSP::odometry() {
   //------------------------------------------------
 
   // Update PID inputs:
-  rPID_Input = _navigator.RightSpeed();
-  lPID_Input = _navigator.LeftSpeed();
+  rPID_Input = navigator.RightSpeed();
+  lPID_Input = navigator.LeftSpeed();
   //-------------------------------------------
 }
 
-void ATSP::state_controller() {
-
-  switch (_state) {
-  case WAINTING:
-
-    break;
-
-  case RUNNING:
-    motorHandler(); // Update new PWM values
-
-    break;
-  }
-}
-
-void ATSP::sendto_esp8266() {}
-
-drive_robot(double v, double w) {
-  rPID_Setpoint = (v + (w * WHEEL_BASE / 2));
-  lPID_Setpoint = (v - (w * WHEEL_BASE / 2));
+void ATSP::drive_robot(double v, double w) {
+  this->rPID_Setpoint = (v + (w * ATSP::_WHEEL_BASE / 2));
+  this->lPID_Setpoint = (v - (w * ATSP::_WHEEL_BASE / 2));
 }
 
 void ATSP::motor_handler() {
@@ -124,4 +98,23 @@ void ATSP::motor_handler() {
     analogWrite(_leftmotor_IN3, LOW);
     analogWrite(_leftmotor_IN4, abs(lPID_Output));
   }
+}
+
+void ATSP::state_controller() {
+
+  switch (_state) {
+  case ATSP::WAITING:
+
+    break;
+
+  case ATSP::RUNNING:
+    ATSP::motor_handler(); // Update new PWM values
+
+    break;
+  }
+}
+
+void ATSP::run() {
+  state_controller(); // States machine
+  odometry();         // Calculates position, velocity, orientation, etc
 }

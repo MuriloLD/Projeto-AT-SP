@@ -17,10 +17,7 @@ class ATSP {
 public:
   ATSP(const int resistor_r1, const int resistor_r2);
 
-  void run() {
-    stateController(); // States machine
-    odometria(0);      // Calculates position, velocity, orientation, etc
-  }
+  void run();
 
   /*****************************SETUP********************************/
   void setup(HardwareSerial &esp_serial, uint16_t baud);
@@ -30,8 +27,6 @@ public:
   /****************************SETTERS*******************************/
   void set_motor_pins(const int right_motor_IN1, const int right_motor_IN2,
                       const int left_motor_IN3, const int left_motor_IN4);
-
-  void enable_esp8266(bool enable) { this->_t_esp_serial.enabled = enable; }
 
   void change_state(int next_state) { _state = next_state; }
 
@@ -43,8 +38,8 @@ private:
   //   Best Performance: both pins have interrupt capability
   //   Good Performance: only the first pin has interrupt capability
   //   Low Performance:  neither pin has interrupt capability
-  Encoder encoder_right(20, 21);
-  Encoder encoder_left(19, 18);
+  Encoder encoder_right;
+  Encoder encoder_left;
   //   avoid using pins with LEDs attached
 
   double rPID_Setpoint, rPID_Input, rPID_Output, lPID_Setpoint, lPID_Input,
@@ -53,11 +48,11 @@ private:
   double pid_max_PWM = 150;
 
   // Rigth and Left PID object:
-  PID PID_right(&rPID_Input, &rPID_Output, &rPID_Setpoint, Kp, Ki, Kd, DIRECT);
-  PID PID_left(&lPID_Input, &lPID_Output, &lPID_Setpoint, Kp, Ki, Kd, DIRECT);
+  PID PID_right;
+  PID PID_left;
 
   // Navigator and aux vars:
-  Navigator _navigator;
+  Navigator navigator;
   double lticks = 0, last_rticks = 0, rticks = 0, last_lticks = 0;
   double t_rticks, t_lticks; // Total ticks
 
@@ -96,14 +91,13 @@ private:
 
   /**************************METHODS*********************************/
 
-  // void sendto_esp8266();
   void state_controller(); // States machine
   void odometry();         // Calculates position, velocity, orientation, etc
   void set_max_pwm();
 
-  // MotorsW
-  drive_robot(double v, double w);
-  motor_handler(); // Update new PWM values
+  // Motors handlers:
+  void drive_robot(double v, double w);
+  void motor_handler(); // Update new PWM values
 };
 
 #endif
