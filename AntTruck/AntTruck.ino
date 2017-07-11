@@ -1310,7 +1310,7 @@ void setup() {
     #if CFG_IS_ATSP
       T_ESP_SERIAL.setInterval(200); // in milisseconds
     #else
-      T_ESP_SERIAL.setInterval(500); // in milisseconds
+      T_ESP_SERIAL.setInterval(1000); // in milisseconds
     #endif
     T_ESP_SERIAL.onRun(sendToESP);
     T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's "sendData" call.
