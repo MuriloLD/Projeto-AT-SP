@@ -1303,7 +1303,7 @@ void setup() {
     T_alertaBateria.setInterval(10000); // in milisseconds
     T_alertaBateria.onRun(alertaBateria);
     //--------------------------------------------
-    T_USinterrupt_Read.setInterval(10); // in milisseconds
+    T_USinterrupt_Read.setInterval(20); // in milisseconds
     T_USinterrupt_Read.onRun(us_Read);
 
     T_USi_Servo_Read.setInterval(50); // in milisseconds
@@ -1312,7 +1312,7 @@ void setup() {
     #if CFG_IS_ATSP
       T_ESP_SERIAL.setInterval(200); // in milisseconds
     #else
-      T_ESP_SERIAL.setInterval(500); // in milisseconds
+      T_ESP_SERIAL.setInterval(1000); // in milisseconds
     #endif
     T_ESP_SERIAL.onRun(sendToESP);
     T_ESP_SERIAL.enabled = 0; //Doesn't start running before ESP's "sendData" call.
@@ -1343,7 +1343,7 @@ void setup() {
 
 void loop() {
   TC_BATERIA.run(); // Controls battery monitoring functions
-  // TC_US.run(); // Controls ultrasound sensors readings
+  TC_US.run(); // Controls ultrasound sensors readings
   TC_ESP_SERIAL.run(); // Sends variables buffer to the ESP8266 every 500ms
   computePID(); // Calculates PID's parameters
   odometria(0); // Calculates position, velocity, orientation, etc

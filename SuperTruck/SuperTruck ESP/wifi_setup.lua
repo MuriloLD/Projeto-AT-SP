@@ -26,7 +26,7 @@ end
 function setup_server(aps)
   print("Setting up Wifi AP")
   wifi.setmode(wifi.SOFTAP)
-  wifi.ap.config({ssid="ESP8266"})
+  wifi.ap.config({ssid="SuperTruck"})
   print("Setting up webserver")
 
   --web server
@@ -69,7 +69,8 @@ function setup_server(aps)
     buf = buf .. "Enter wifi SSID: <input type='text' name='ap'></input><br>"
     buf = buf .. "Enter wifi password: <input type='password' name='psw'></input><br>"
     buf = buf .. "Enter MQTT Broker IP: <input type='text' name='bip'></input><br>"
-    buf = buf .. "Enter MQTT Broker PORT: <input type='text' name='bport'></input><br>"
+    buf = buf .. "Enter MQTT Broker PORT: <input type='text' name='bport' value='1883'></input><br>"
+    buf = buf .. "Enter intent (Options: DEFAULT, IS): <input type='text' name='intent' value='DEFAULT'></input><br>"
     buf = buf .. "<br><button type='submit'>Save</button>"               
     buf = buf .. "</form></body></html>"
     client:send(buf)

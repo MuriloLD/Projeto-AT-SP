@@ -39,7 +39,7 @@
 
   //Debugs:
   #define DEBUG_SETPIDINTERVAL  0     // PWM max
-  #define DEBUG_ESP_FEEDBACK    0     // Usage of "Serial.print" 
+  #define DEBUG_ESP_FEEDBACK    1     // Usage of "Serial.print" 
 
   //Testes:
   #define TST_MOTORS      0 // Nominal voltage test
@@ -1301,7 +1301,7 @@ void setup() {
     T_alertaBateria.setInterval(10000); // in milisseconds
     T_alertaBateria.onRun(alertaBateria);
     //--------------------------------------------
-    T_USinterrupt_Read.setInterval(10); // in milisseconds
+    T_USinterrupt_Read.setInterval(20); // in milisseconds
     T_USinterrupt_Read.onRun(us_Read);
 
     T_USi_Servo_Read.setInterval(50); // in milisseconds
@@ -1341,7 +1341,7 @@ void setup() {
 
 void loop() {
   TC_BATERIA.run(); // Controls battery monitoring functions
-  // TC_US.run(); // Controls ultrasound sensors readings
+  TC_US.run(); // Controls ultrasound sensors readings
   TC_ESP_SERIAL.run(); // Sends variables buffer to the ESP8266 every 500ms
   computePID(); // Calculates PID's parameters
   odometria(0); // Calculates position, velocity, orientation, etc

@@ -26,13 +26,6 @@ function publishTable(table)
 		mqttClient:publish('SuperTruck/Vars/'..key,value,0,0)
 	end
 	
-	-- Using just odometry:	
-	-- mqttClient:publish('SuperTruck/Pose',
-	-- 					table.nav_pos_x ..'/'..
-	-- 					table.nav_pos_y ..'/'..
-	-- 					table.nav_heading..'/'..
-	-- 					table.nav_velLinear ..'/'..
-	-- 					table.nav_velAngular ,0,0)
 	collectgarbage()
 	collectgarbage()
 end
